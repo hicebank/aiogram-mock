@@ -1,31 +1,36 @@
 from datetime import datetime
-from typing import Any, AsyncGenerator, Mapping, Sequence, Type
+from typing import Any, AsyncGenerator, List, Mapping, Optional, Sequence, Type, Union
 
 from aiogram import Bot
 from aiogram.client.session.base import BaseSession
-from aiogram.methods import (AnswerCallbackQuery, EditMessageReplyMarkup,
-                             EditMessageText, SendMessage, SendPhoto,
-                             SetChatMenuButton, TelegramMethod)
+from aiogram.methods import (
+    AnswerCallbackQuery,
+    EditMessageReplyMarkup,
+    EditMessageText,
+    SendMessage,
+    SendPhoto,
+    SetChatMenuButton,
+    TelegramMethod,
+)
 from aiogram.methods.base import TelegramType
-from aiogram.types import (UNSET, InlineKeyboardMarkup, Message,
-                           ReplyKeyboardRemove, User)
+from aiogram.types import UNSET, InlineKeyboardMarkup, Message, ReplyKeyboardRemove, User
 
 from aiogram_mock.tg_state import TgState
 
-SendMessageVariant = SendMessage | SendPhoto
+SendMessageVariant = Union[SendMessage, SendPhoto]
 
 
 class MockedSession(BaseSession):
     def __init__(self, tg_state: TgState, bot_user: User):
         self._tg_state = tg_state
         self._bot_user = bot_user
-        self._sent_methods: list[TelegramMethod[Any]] = []
+        self._sent_methods: List[TelegramMethod[Any]] = []
         super().__init__()
 
     async def close(self) -> None:
         pass
 
-    def _process_reply_markup(self, chat_id: int, method: SendMessageVariant) -> InlineKeyboardMarkup | None:
+    def _process_reply_markup(self, chat_id: int, method: SendMessageVariant) -> Optional[InlineKeyboardMarkup]:
         if isinstance(method.reply_markup, InlineKeyboardMarkup):
             return method.reply_markup
         elif isinstance(method.reply_markup, ReplyKeyboardRemove):
@@ -35,7 +40,7 @@ class MockedSession(BaseSession):
             self._tg_state.update_chat_user_state(chat_id=chat_id, reply_markup=method.reply_markup)
         return None
 
-    def _process_reply(self, chat_id: int, method: SendMessageVariant) -> Message | None:
+    def _process_reply(self, chat_id: int, method: SendMessageVariant) -> Optional[Message]:
         if method.reply_to_message_id is not None:
             try:
                 return self._tg_state.get_message(chat_id, method.reply_to_message_id)
@@ -44,7 +49,7 @@ class MockedSession(BaseSession):
                     raise
         return None
 
-    async def _mock_send_message(self, bot: Bot, method: SendMessage, timeout: int | None = UNSET) -> Message:
+    async def _mock_send_message(self, bot: Bot, method: SendMessage, timeout: Optional[int] = UNSET) -> Message:
         chat_id = int(method.chat_id)
         return self._tg_state.add_message(
             Message(
@@ -59,7 +64,7 @@ class MockedSession(BaseSession):
             ),
         )
 
-    async def _mock_send_photo(self, bot: Bot, method: SendPhoto, timeout: int | None = UNSET) -> Message:
+    async def _mock_send_photo(self, bot: Bot, method: SendPhoto, timeout: Optional[int] = UNSET) -> Message:
         chat_id = int(method.chat_id)
         return self._tg_state.add_message(
             Message(
@@ -79,7 +84,7 @@ class MockedSession(BaseSession):
         self,
         bot: Bot,
         method: AnswerCallbackQuery,
-        timeout: int | None = UNSET,
+        timeout: Optional[Message] = UNSET,
     ) -> bool:
         self._tg_state.add_answer_callback_query(method)
         return True
@@ -88,7 +93,7 @@ class MockedSession(BaseSession):
         self,
         bot: Bot,
         method: AnswerCallbackQuery,
-        timeout: int | None = UNSET,
+        timeout: Optional[int] = UNSET,
     ) -> bool:
         return True
 
@@ -96,8 +101,8 @@ class MockedSession(BaseSession):
         self,
         bot: Bot,
         method: EditMessageText,
-        timeout: int | None = UNSET,
-    ) -> Message | bool:
+        timeout: Optional[int] = UNSET,
+    ) -> Union[Message, bool]:
         if method.chat_id is None and method.message_id is None:
             raise NotImplementedError('Editing of inlined message is not supported')
         if method.chat_id is None or method.message_id is None:
@@ -114,8 +119,8 @@ class MockedSession(BaseSession):
         self,
         bot: Bot,
         method: EditMessageReplyMarkup,
-        timeout: int | None = UNSET,
-    ) -> Message | bool:
+        timeout: Optional[int] = UNSET,
+    ) -> Union[Message, bool]:
         if method.chat_id is None and method.message_id is None:
             raise NotImplementedError('Edititng of inlined message is not supported')
         if method.chat_id is None or method.message_id is None:
@@ -141,7 +146,7 @@ class MockedSession(BaseSession):
         self,
         bot: Bot,
         method: TelegramMethod[TelegramType],
-        timeout: int | None = UNSET,
+        timeout: Optional[int] = UNSET,
     ) -> TelegramType:
         self._sent_methods.append(method)
         try:

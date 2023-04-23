@@ -1,13 +1,12 @@
 import itertools
 from datetime import datetime
-from typing import Callable, Sequence
+from typing import Callable, Optional, Sequence, Union
 
 from aiogram import Bot, Dispatcher, MagicFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.storage.base import DEFAULT_DESTINY, BaseStorage, StorageKey
 from aiogram.methods import AnswerCallbackQuery
-from aiogram.types import (CallbackQuery, Chat, Contact, InlineKeyboardButton,
-                           Message, Update, User)
+from aiogram.types import CallbackQuery, Chat, Contact, InlineKeyboardButton, Message, Update, User
 
 from aiogram_mock.tg_state import TgState, UserState
 
@@ -65,7 +64,7 @@ class TgControl:
 
     async def click(
         self,
-        selector: Callable[[InlineKeyboardButton], bool] | MagicFilter,
+        selector: Union[Callable[[InlineKeyboardButton], bool], MagicFilter],
         message: Message,
         user: User,
     ) -> AnswerCallbackQuery:
@@ -170,8 +169,8 @@ class PrivateChatTgControl:
 
     async def click(
         self,
-        selector: Callable[[InlineKeyboardButton], bool] | MagicFilter,
-        message: Message | None = None,
+        selector: Union[Callable[[InlineKeyboardButton], bool], MagicFilter],
+        message: Optional[Message] = None,
     ) -> AnswerCallbackQuery:
         if message is None:
             message = self.last_message

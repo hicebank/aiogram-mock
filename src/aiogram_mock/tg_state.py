@@ -1,24 +1,31 @@
 import itertools
 from collections import defaultdict
 from dataclasses import dataclass, replace
-from typing import DefaultDict, Dict, Iterable, List, Mapping, Sequence, Tuple
+from typing import DefaultDict, Dict, Iterable, List, Mapping, Optional, Sequence, Tuple, Union
 from uuid import uuid4
 
 from aiogram.methods import AnswerCallbackQuery
-from aiogram.types import (UNSET, Chat, Document, ForceReply,
-                           InlineKeyboardMarkup, InputFile, Message,
-                           ReplyKeyboardMarkup)
+from aiogram.types import (
+    UNSET,
+    Chat,
+    Document,
+    ForceReply,
+    InlineKeyboardMarkup,
+    InputFile,
+    Message,
+    ReplyKeyboardMarkup,
+)
 
 
 @dataclass(frozen=True)
 class UserState:
-    reply_markup: ReplyKeyboardMarkup | ForceReply | None = None
+    reply_markup: Union[ReplyKeyboardMarkup, ForceReply, None] = None
 
 
 class TgState:
     def __init__(self, chats: Iterable[Chat]):
         self._chats = {chat.id: chat for chat in chats}
-        self._histories: Dict[int, List[Message | None]] = {chat.id: [] for chat in chats}
+        self._histories: Dict[int, List[Optional[Message]]] = {chat.id: [] for chat in chats}
         self._message_dict: Dict[Tuple[int, int], Message] = {}
         self._last_update_id: int = 0
         self._last_callback_query_id: int = 0
@@ -107,7 +114,7 @@ class TgState:
     def update_chat_user_state(
         self,
         chat_id: int,
-        reply_markup: ReplyKeyboardMarkup | ForceReply | None = UNSET,
+        reply_markup: Union[ReplyKeyboardMarkup, ForceReply, None] = UNSET,
     ) -> None:
         replace_data = {}
         if reply_markup != UNSET:
@@ -124,7 +131,7 @@ class TgState:
         self,
         chat_id: int,
         users_ids: Iterable[int],
-        reply_markup: ReplyKeyboardMarkup | ForceReply | None = UNSET,
+        reply_markup: Union[ReplyKeyboardMarkup, ForceReply, None] = UNSET,
     ) -> None:
         replace_data = {}
         if reply_markup != UNSET:
@@ -165,7 +172,7 @@ class TgState:
         local_id_to_unique_id[local_id] = unique_id
         return local_id
 
-    async def load_file(self, user_id: int, input_file: InputFile | str) -> Document:
+    async def load_file(self, user_id: int, input_file: Union[InputFile, str]) -> Document:
         if isinstance(input_file, str):
             unique_id = self._user_id_to_local_id_to_unique_id[user_id][input_file]
             return Document(

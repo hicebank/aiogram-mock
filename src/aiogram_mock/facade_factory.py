@@ -1,5 +1,5 @@
 from contextlib import contextmanager
-from typing import Callable, Generator, Iterable
+from typing import Callable, Generator, Iterable, Optional
 from unittest.mock import patch
 
 from aiogram import Bot, Dispatcher
@@ -15,8 +15,8 @@ from aiogram_mock.tg_state import TgState
 def private_chat_tg_control(
     dispatcher: Dispatcher,
     bot: Bot,
-    target_user: User | None = None,
-    bot_user: User | None = None,
+    target_user: Optional[User] = None,
+    bot_user: Optional[User] = None,
     tg_state_factory: Callable[[Iterable[Chat]], TgState] = TgState,
     mocked_session_factory: Callable[[TgState, User], BaseSession] = MockedSession,
 ) -> Generator[PrivateChatTgControl, None, None]:
