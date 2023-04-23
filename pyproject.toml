@@ -1,0 +1,49 @@
+[build-system]
+requires = ['setuptools==67.7.1']
+build-backend = 'setuptools.build_meta'
+
+[project]
+name = 'aiogram_mock'
+version = '0.0.1'
+description = 'Tools for testing of aiogram applications'
+readme = 'README.md'
+requires-python = '>=3.8'
+
+classifiers = [
+    'Development Status :: 3 - Alpha',
+    'Programming Language :: Python :: 3',
+    'Programming Language :: Python :: 3.8',
+    'Programming Language :: Python :: 3.9',
+    'Programming Language :: Python :: 3.10',
+    'Programming Language :: Python :: Implementation :: CPython',
+    'Programming Language :: Python :: Implementation :: PyPy',
+    'Operating System :: OS Independent',
+    'Intended Audience :: Developers',
+    'Intended Audience :: Information Technology',
+    'License :: OSI Approved :: Apache Software License',
+    'Typing :: Typed',
+    'Topic :: Software Development :: Libraries :: Python Modules',
+    'Topic :: Internet',
+]
+
+dependencies = [
+    'aiogram>=3.0.0b6'
+]
+
+[project.urls]
+'Homepage' = 'https://github.com/hicebank/aiogram_mock'
+'Bug Tracker' = 'https://github.com/hicebank/aiogram_mock/issues'
+'Source' = 'https://github.com/hicebank/aiogram_mock/'
+'Download' = 'https://github.com/hicebank/aiogram_mock/#files'
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.package-data]
+adaptix = ['py.typed']
+
+[[project.authors]]
+name = 'Pavel'
+
+[tool.pytest.ini_options]
+asyncio_mode = 'auto'
