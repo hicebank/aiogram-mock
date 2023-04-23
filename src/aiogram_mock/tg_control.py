@@ -6,7 +6,8 @@ from aiogram import Bot, Dispatcher, MagicFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.storage.base import DEFAULT_DESTINY, BaseStorage, StorageKey
 from aiogram.methods import AnswerCallbackQuery
-from aiogram.types import CallbackQuery, Chat, Contact, InlineKeyboardButton, Message, Update, User
+from aiogram.types import (CallbackQuery, Chat, Contact, InlineKeyboardButton,
+                           Message, Update, User)
 
 from aiogram_mock.tg_state import TgState, UserState
 

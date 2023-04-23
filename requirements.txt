@@ -1,2 +1,7 @@
-pytest
+# CI
+pytest==7.3.1
 pytest-asyncio
+
+mypy==1.2.0
+flake8==6.0.0
+isort==5.12.0

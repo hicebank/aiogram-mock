@@ -1,20 +1,13 @@
 import itertools
 from collections import defaultdict
 from dataclasses import dataclass, replace
-from typing import DefaultDict, Iterable, Mapping, Sequence, Dict, Tuple, List
+from typing import DefaultDict, Dict, Iterable, List, Mapping, Sequence, Tuple
 from uuid import uuid4
 
 from aiogram.methods import AnswerCallbackQuery
-from aiogram.types import (
-    UNSET,
-    Chat,
-    Document,
-    ForceReply,
-    InlineKeyboardMarkup,
-    InputFile,
-    Message,
-    ReplyKeyboardMarkup,
-)
+from aiogram.types import (UNSET, Chat, Document, ForceReply,
+                           InlineKeyboardMarkup, InputFile, Message,
+                           ReplyKeyboardMarkup)
 
 
 @dataclass(frozen=True)

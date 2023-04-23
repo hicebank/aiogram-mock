@@ -1,5 +1,5 @@
 from contextlib import contextmanager
-from typing import Generator, Callable, Iterable
+from typing import Callable, Generator, Iterable
 from unittest.mock import patch
 
 from aiogram import Bot, Dispatcher

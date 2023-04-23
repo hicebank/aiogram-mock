@@ -3,17 +3,12 @@ from typing import Any, AsyncGenerator, Mapping, Sequence, Type
 
 from aiogram import Bot
 from aiogram.client.session.base import BaseSession
-from aiogram.methods import (
-    AnswerCallbackQuery,
-    EditMessageReplyMarkup,
-    EditMessageText,
-    SendMessage,
-    SendPhoto,
-    SetChatMenuButton,
-    TelegramMethod,
-)
+from aiogram.methods import (AnswerCallbackQuery, EditMessageReplyMarkup,
+                             EditMessageText, SendMessage, SendPhoto,
+                             SetChatMenuButton, TelegramMethod)
 from aiogram.methods.base import TelegramType
-from aiogram.types import UNSET, InlineKeyboardMarkup, Message, ReplyKeyboardRemove, User
+from aiogram.types import (UNSET, InlineKeyboardMarkup, Message,
+                           ReplyKeyboardRemove, User)
 
 from aiogram_mock.tg_state import TgState
 
