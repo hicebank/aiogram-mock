@@ -3,7 +3,7 @@
 Tools for testing of aiogram applications
 
 ```
-pip install aiogram_mock
+pip install git+https://github.com/hicebank/aiogram-mock#egg=aiogram_mock
 ```
 
 
