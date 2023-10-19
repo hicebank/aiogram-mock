@@ -6,7 +6,6 @@ from uuid import uuid4
 
 from aiogram.methods import AnswerCallbackQuery
 from aiogram.types import (
-    UNSET,
     Chat,
     Document,
     ForceReply,
@@ -15,7 +14,7 @@ from aiogram.types import (
     Message,
     ReplyKeyboardMarkup,
 )
-
+from aiogram.types.base import UNSET
 
 @dataclass(frozen=True)
 class UserState:
