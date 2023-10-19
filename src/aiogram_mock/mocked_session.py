@@ -13,7 +13,8 @@ from aiogram.methods import (
     TelegramMethod,
 )
 from aiogram.methods.base import TelegramType
-from aiogram.types import UNSET, InlineKeyboardMarkup, Message, ReplyKeyboardRemove, User
+from aiogram.types import InlineKeyboardMarkup, Message, ReplyKeyboardRemove, User
+from aiogram.types.base import UNSET
 
 from aiogram_mock.tg_state import TgState
 
