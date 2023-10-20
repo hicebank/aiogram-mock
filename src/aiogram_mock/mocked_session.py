@@ -70,7 +70,7 @@ class MockedSession(BaseSession):
         return self._tg_state.add_message(
             Message(
                 message_id=self._tg_state.next_message_id(chat_id),
-                text=method.caption,
+                caption=method.caption,
                 chat=self._tg_state.chats[chat_id],
                 date=datetime.utcnow(),
                 message_thread_id=method.message_thread_id,
