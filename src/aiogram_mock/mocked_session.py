@@ -77,7 +77,7 @@ class MockedSession(BaseSession):
                 from_user=self._bot_user,
                 reply_to_message=self._process_reply(chat_id, method),
                 reply_markup=self._process_reply_markup(chat_id, method),
-                document=await self._tg_state.load_file(bot.id, method.photo),
+                photo=await self._tg_state.load_photo(bot.id, method.photo),
             ),
         )
 
