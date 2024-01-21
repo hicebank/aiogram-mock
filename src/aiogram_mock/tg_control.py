@@ -6,7 +6,15 @@ from aiogram import Bot, Dispatcher, MagicFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.storage.base import DEFAULT_DESTINY, BaseStorage, StorageKey
 from aiogram.methods import AnswerCallbackQuery
-from aiogram.types import CallbackQuery, Chat, Contact, InlineKeyboardButton, Message, Update, User
+from aiogram.types import (
+    CallbackQuery,
+    Chat,
+    Contact,
+    InlineKeyboardButton,
+    Message,
+    Update,
+    User,
+)
 
 from aiogram_mock.tg_state import TgState, UserState
 
@@ -69,16 +77,16 @@ class TgControl:
         user: User,
     ) -> AnswerCallbackQuery:
         if message.reply_markup is None:
-            raise ValueError('Message has no inline keyboard')
+            raise ValueError("Message has no inline keyboard")
         if isinstance(selector, MagicFilter):
             selector = selector.resolve
 
         buttons = itertools.chain.from_iterable(message.reply_markup.inline_keyboard)
         selected_buttons = [button for button in buttons if selector(button)]
         if len(selected_buttons) == 0:
-            raise ValueError('selector skip all buttons')
+            raise ValueError("selector skip all buttons")
         if len(selected_buttons) > 1:
-            raise ValueError('selector selects more than one button')
+            raise ValueError("selector selects more than one button")
         button = selected_buttons[0]
 
         callback_query_id = self._tg_state.next_callback_query_id()
@@ -89,7 +97,9 @@ class TgControl:
                 callback_query=CallbackQuery(
                     id=callback_query_id,
                     data=button.callback_data,
-                    chat_instance=str(message.chat.id),  # message.chat.id contains local id
+                    chat_instance=str(
+                        message.chat.id
+                    ),  # message.chat.id contains local id
                     from_user=user,
                     message=message,
                 ),
@@ -115,7 +125,7 @@ class PrivateChatTgControl:
 
     def _validate(self) -> None:
         if self._chat.id != self._user.id:
-            raise ValueError('chat.id and user.id must be equal')
+            raise ValueError("chat.id and user.id must be equal")
 
     def state(self, destiny: str = DEFAULT_DESTINY) -> FSMContext:
         return FSMContext(
@@ -153,9 +163,17 @@ class PrivateChatTgControl:
     def chat(self) -> Chat:
         return self._chat
 
-    async def send(self, text: str) -> None:
+    async def send(
+        self, text: str, user_id: int | None = None, first_name: str | None = None
+    ) -> None:
+        target_user = User(
+            id=user_id if user_id is not None else 103592704,
+            first_name=first_name if first_name is not None else "Linus",
+            last_name="Torvalds",
+            is_bot=False,
+        )
         return await self._tg_control.send(
-            from_user=self._user,
+            from_user=target_user,
             chat=self._chat,
             text=text,
         )
