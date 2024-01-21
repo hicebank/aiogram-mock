@@ -164,17 +164,11 @@ class PrivateChatTgControl:
         return self._chat
 
     async def send(
-        self, text: str, user_id: int | None = None, first_name: str | None = None
+        self, text: str, user: Optional[User] = None, chat: Optional[Chat] = None
     ) -> None:
-        target_user = User(
-            id=user_id if user_id is not None else 103592704,
-            first_name=first_name if first_name is not None else "Linus",
-            last_name="Torvalds",
-            is_bot=False,
-        )
         return await self._tg_control.send(
-            from_user=target_user,
-            chat=self._chat,
+            from_user=user or self._user,
+            chat=chat or self._chat,
             text=text,
         )
 
