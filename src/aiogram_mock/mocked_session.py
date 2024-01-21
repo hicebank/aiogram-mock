@@ -7,13 +7,16 @@ from aiogram.methods import (
     AnswerCallbackQuery,
     EditMessageReplyMarkup,
     EditMessageText,
+    EditMessageCaption,
     SendMessage,
     SendPhoto,
     SetChatMenuButton,
     TelegramMethod,
+
 )
 from aiogram.methods.base import TelegramType
-from aiogram.types import UNSET, InlineKeyboardMarkup, Message, ReplyKeyboardRemove, User
+from aiogram.types import InlineKeyboardMarkup, Message, ReplyKeyboardRemove, User
+from aiogram.types.base import UNSET
 
 from aiogram_mock.tg_state import TgState
 
@@ -69,14 +72,14 @@ class MockedSession(BaseSession):
         return self._tg_state.add_message(
             Message(
                 message_id=self._tg_state.next_message_id(chat_id),
-                text=method.caption,
+                caption=method.caption,
                 chat=self._tg_state.chats[chat_id],
                 date=datetime.utcnow(),
                 message_thread_id=method.message_thread_id,
                 from_user=self._bot_user,
                 reply_to_message=self._process_reply(chat_id, method),
                 reply_markup=self._process_reply_markup(chat_id, method),
-                document=await self._tg_state.load_file(bot.id, method.photo),
+                photo=await self._tg_state.load_photo(bot.id, method.photo),
             ),
         )
 
@@ -115,6 +118,24 @@ class MockedSession(BaseSession):
         self._tg_state.replace_message(new_message)
         return new_message
 
+    async def _mock_edit_message_caption(
+        self,
+        bot: Bot,
+        method: EditMessageCaption,
+        timeout: Optional[int] = UNSET,
+    ) -> Union[Message, bool]:
+        if method.chat_id is None and method.message_id is None:
+            raise NotImplementedError('Editing of inlined message is not supported')
+        if method.chat_id is None or method.message_id is None:
+            raise ValueError('Bad sent message')
+
+        message = self._tg_state.get_message(int(method.chat_id), method.message_id)
+        new_message = message.copy(
+            update={'caption': method.caption, 'reply_markup': method.reply_markup},
+        )
+        self._tg_state.replace_message(new_message)
+        return new_message
+
     async def _mock_edit_message_reply_markup(
         self,
         bot: Bot,
@@ -139,6 +160,7 @@ class MockedSession(BaseSession):
         AnswerCallbackQuery: _mock_answer_callback_query.__name__,
         SetChatMenuButton: _mock_set_chat_menu_button.__name__,
         EditMessageText: _mock_edit_message_text.__name__,
+        EditMessageCaption: _mock_edit_message_caption.__name__,
         EditMessageReplyMarkup: _mock_edit_message_reply_markup.__name__,
     }
 

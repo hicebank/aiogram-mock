@@ -6,7 +6,6 @@ from uuid import uuid4
 
 from aiogram.methods import AnswerCallbackQuery
 from aiogram.types import (
-    UNSET,
     Chat,
     Document,
     ForceReply,
@@ -14,8 +13,9 @@ from aiogram.types import (
     InputFile,
     Message,
     ReplyKeyboardMarkup,
+    PhotoSize
 )
-
+from aiogram.types.base import UNSET
 
 @dataclass(frozen=True)
 class UserState:
@@ -189,3 +189,22 @@ class TgState:
             file_unique_id=unique_id,
             file_name=input_file.filename,
         )
+
+    async def load_photo(
+        self, user_id: int, input_file: Union[InputFile, str]
+    ) -> list[PhotoSize]:
+        if isinstance(input_file, str):
+            content = input_file
+        elif isinstance(input_file, InputFile):
+            content = await self._read_content(input_file)
+
+        unique_id = self._get_or_create_file_unique_id(content)
+        local_id = self._get_or_create_file_local_id(user_id, unique_id)
+        return [
+            PhotoSize(
+                file_id=input_file,
+                file_unique_id=unique_id,
+                width=100,
+                height=100,
+            )
+        ] * 3
